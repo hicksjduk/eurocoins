@@ -17,7 +17,8 @@ public class CommemorativeCoinParser
     public static void main(String[] args) throws Exception
     {
         new CommemorativeCoinParser().parse()
-                .sorted()
+                .filter(c -> c.country()
+                        .equals("Greece"))
                 .forEach(System.out::println);
     }
 
@@ -52,8 +53,8 @@ public class CommemorativeCoinParser
                                     .stream()
                                     .filter(cd -> cd.year() >= accessions.getOrDefault(e.getKey(),
                                             2001))
-                                    .map(cd -> new CommemorativeCoinData(e.getKey(), cd.year(), cd.seq(),
-                                            cd.description(), cd.imageUri()))));
+                                    .map(cd -> new CommemorativeCoinData(e.getKey(), cd.year(),
+                                            cd.seq(), cd.description(), cd.imageUri()))));
         }
         catch (Exception ex)
         {
@@ -63,7 +64,7 @@ public class CommemorativeCoinParser
 
     Function<Element, CommemorativeCoinData> parser()
     {
-        Pattern titlePattern = Pattern.compile("2 euro coin (.+) \\| (.+) (\\d+)");
+        Pattern titlePattern = Pattern.compile("2 euro coin (.+)\\| (.+) (\\d+)", Pattern.DOTALL);
         AtomicInteger seq = new AtomicInteger();
         return e ->
             {
@@ -72,8 +73,8 @@ public class CommemorativeCoinParser
                 if (!matcher.matches())
                     return null;
                 var imageUri = baseUri + e.attr("src");
-                return new CommemorativeCoinData(matcher.group(2), Integer.parseInt(matcher.group(3)),
-                        seq.getAndIncrement(), matcher.group(1)
+                return new CommemorativeCoinData(matcher.group(2),
+                        Integer.parseInt(matcher.group(3)), seq.getAndIncrement(), matcher.group(1)
                                 .trim(),
                         imageUri);
             };
