@@ -29,8 +29,8 @@ public class CoinPageOutputter
         {
             pw.println("<h1>%s</h1>".formatted(country));
             pw.println("<table>");
-            outputD(pw, definitives);
-            outputC(pw, commemoratives);
+            outputDefinitives(pw, definitives);
+            outputCommemoratives(pw, commemoratives);
             pw.println("</table>");
         }
         catch (Exception ex)
@@ -39,7 +39,7 @@ public class CoinPageOutputter
         }
     }
 
-    private void outputD(PrintWriter pw, List<DefinitiveCoinData> coins)
+    private void outputDefinitives(PrintWriter pw, List<DefinitiveCoinData> coins)
     {
         var bySeries = coins.stream()
                 .collect(Collectors.groupingBy(DefinitiveCoinData::series));
@@ -57,7 +57,7 @@ public class CoinPageOutputter
                         pw.println("<tr>");
                         for (var i = 0; i < 5; i++)
                         {
-                            outputD(pw, it.next());
+                            output(pw, it.next());
                             if (!it.hasNext())
                                 return;
                         }
@@ -65,7 +65,7 @@ public class CoinPageOutputter
                         pw.println("<tr>");
                         for (var i = 0; i < 3; i++)
                         {
-                            outputD(pw, it.next());
+                            output(pw, it.next());
                             if (!it.hasNext())
                                 return;
                         }
@@ -73,14 +73,14 @@ public class CoinPageOutputter
                     });
     }
 
-    private void outputD(PrintWriter pw, DefinitiveCoinData cd)
+    private void output(PrintWriter pw, DefinitiveCoinData cd)
     {
         pw.print("<td align='center'>");
         pw.print("<img src='%s' height='%d'>".formatted(cd.imageUrl(), sizes.get(cd.centValue())));
         pw.println("</td>");
     }
 
-    private void outputC(PrintWriter pw, List<CommemorativeCoinData> coins)
+    private void outputCommemoratives(PrintWriter pw, List<CommemorativeCoinData> coins)
     {
         IntStream.range(0, Math.ceilDiv(coins.size(), coinsPerRow))
                 .forEach(rowOutputter(pw, coins));
