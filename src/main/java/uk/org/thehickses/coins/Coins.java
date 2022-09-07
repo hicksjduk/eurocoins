@@ -7,7 +7,7 @@ public class Coins
 
     public static void main(String[] args)
     {
-        var defsByCountry = new DefinitiveCoinParserECB().parse().sorted()
+        var defsByCountry = new DefinitiveCoinParser().parse().sorted()
                 .collect(Collectors.groupingBy(DefinitiveCoinData::country));
         var commemsByCountry = new CommemorativeCoinParser().parse()
                 .sorted()
