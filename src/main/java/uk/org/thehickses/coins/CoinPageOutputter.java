@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -14,6 +15,12 @@ import java.util.stream.Stream;
 public class CoinPageOutputter
 {
     private static int coinsPerRow = 6;
+    private static Map<Integer, Integer> sizes = Stream
+            .of("200, 2575", "100, 2325", "50, 2425", "20, 2225", "10, 1975", "5, 2125", "2, 1875",
+                    "1, 1625")
+            .map(s -> s.split("\\D+"))
+            .collect(Collectors.toMap(a -> Integer.parseInt(a[0]),
+                    a -> Integer.parseInt(a[1]) * 200 / 2575));
 
     public void output(String country, List<DefinitiveCoinData> definitives,
             List<CommemorativeCoinData> commemoratives)
@@ -69,7 +76,7 @@ public class CoinPageOutputter
     private void outputD(PrintWriter pw, DefinitiveCoinData cd)
     {
         pw.print("<td align='center'>");
-        pw.print("<img src='%s' height='200'>".formatted(cd.imageUrl()));
+        pw.print("<img src='%s' height='%d'>".formatted(cd.imageUrl(), sizes.get(cd.centValue())));
         pw.println("</td>");
     }
 
@@ -104,7 +111,7 @@ public class CoinPageOutputter
         return cd ->
             {
                 pw.print("<td align='center'>");
-                pw.print("<img src='%s' height='200'>".formatted(cd.imageUri()));
+                pw.print("<img src='%s' height='%d'>".formatted(cd.imageUri(), sizes.get(200)));
                 pw.println("</td>");
             };
     }
