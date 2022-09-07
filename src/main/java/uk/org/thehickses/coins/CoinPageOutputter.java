@@ -20,7 +20,7 @@ public class CoinPageOutputter
                     "1, 1625")
             .map(s -> s.split("\\D+"))
             .collect(Collectors.toMap(a -> Integer.parseInt(a[0]),
-                    a -> Integer.parseInt(a[1]) * 200 / 2575));
+                    a -> Integer.parseInt(a[1]) * 150 / 2575));
 
     public void output(String country, List<DefinitiveCoinData> definitives,
             List<CommemorativeCoinData> commemoratives)
