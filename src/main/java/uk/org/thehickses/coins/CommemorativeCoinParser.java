@@ -12,11 +12,11 @@ import java.util.stream.Stream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
-public class CoinParser
+public class CommemorativeCoinParser
 {
     public static void main(String[] args) throws Exception
     {
-        new CoinParser().parse()
+        new CommemorativeCoinParser().parse()
                 .sorted()
                 .forEach(System.out::println);
     }
@@ -30,7 +30,7 @@ public class CoinParser
     static final String baseUri = "https://www.coin-database.com";
     static final String dataPage = "/series/eurozone-commemorative-2-euro-coins-2-euro.html?";
 
-    public Stream<CoinData> parse()
+    public Stream<CommemorativeCoinData> parse()
     {
         var url = baseUri + dataPage;
         try
@@ -41,7 +41,7 @@ public class CoinParser
                     .stream()
                     .map(parser())
                     .filter(Objects::nonNull)
-                    .collect(Collectors.groupingBy(CoinData::country));
+                    .collect(Collectors.groupingBy(CommemorativeCoinData::country));
             return byCountry.entrySet()
                     .stream()
                     .filter(e -> !e.getKey()
@@ -52,7 +52,7 @@ public class CoinParser
                                     .stream()
                                     .filter(cd -> cd.year() >= accessions.getOrDefault(e.getKey(),
                                             2001))
-                                    .map(cd -> new CoinData(e.getKey(), cd.year(), cd.seq(),
+                                    .map(cd -> new CommemorativeCoinData(e.getKey(), cd.year(), cd.seq(),
                                             cd.description(), cd.imageUri()))));
         }
         catch (Exception ex)
@@ -61,7 +61,7 @@ public class CoinParser
         }
     }
 
-    Function<Element, CoinData> parser()
+    Function<Element, CommemorativeCoinData> parser()
     {
         Pattern titlePattern = Pattern.compile("2 euro coin (.+) \\| (.+) (\\d+)");
         AtomicInteger seq = new AtomicInteger();
@@ -72,7 +72,7 @@ public class CoinParser
                 if (!matcher.matches())
                     return null;
                 var imageUri = baseUri + e.attr("src");
-                return new CoinData(matcher.group(2), Integer.parseInt(matcher.group(3)),
+                return new CommemorativeCoinData(matcher.group(2), Integer.parseInt(matcher.group(3)),
                         seq.getAndIncrement(), matcher.group(1)
                                 .trim(),
                         imageUri);

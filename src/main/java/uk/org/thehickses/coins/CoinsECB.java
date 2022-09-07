@@ -26,9 +26,9 @@ public class CoinsECB
 
     static final String baseUri = "https://www.ecb.europa.eu";
     static final String yearPage = "/euro/coins/comm/html/comm_%d.en.html";
-    static final Comparator<CoinData> comp = Comparator.comparing(CoinData::country)
-            .thenComparing(CoinData::year)
-            .thenComparing(CoinData::seq, Comparator.reverseOrder());
+    static final Comparator<CommemorativeCoinData> comp = Comparator.comparing(CommemorativeCoinData::country)
+            .thenComparing(CommemorativeCoinData::year)
+            .thenComparing(CommemorativeCoinData::seq, Comparator.reverseOrder());
 
     static UnaryOperator<String> norm()
     {
@@ -38,7 +38,7 @@ public class CoinsECB
 
     static final UnaryOperator<String> normaliser = norm();
 
-    Stream<CoinData> parse(int year)
+    Stream<CommemorativeCoinData> parse(int year)
     {
         try
         {
@@ -55,7 +55,7 @@ public class CoinsECB
         }
     }
 
-    Function<Element, CoinData> parser(int year)
+    Function<Element, CommemorativeCoinData> parser(int year)
     {
         AtomicInteger seq = new AtomicInteger();
         return elem ->
@@ -67,7 +67,7 @@ public class CoinsECB
                         .ownText();
                 var imageUri = elem.selectFirst("img")
                         .attr("src");
-                return new CoinData(country, year, seq.getAndIncrement(), description, imageUri);
+                return new CommemorativeCoinData(country, year, seq.getAndIncrement(), description, imageUri);
             };
     }
 
