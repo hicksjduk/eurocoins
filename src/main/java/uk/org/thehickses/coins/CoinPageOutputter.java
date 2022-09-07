@@ -90,18 +90,14 @@ public class CoinPageOutputter
     {
         return row ->
             {
-                var rowData = coins.stream()
-                        .skip(row * coinsPerRow)
-                        .limit(coinsPerRow)
-                        .toArray(CommemorativeCoinData[]::new);
+                var rowData = coins.subList(row * coinsPerRow,
+                        Math.min(coins.size(), (row + 1) * coinsPerRow));
                 pw.println("<tr><td>&nbsp;</td></tr>");
                 pw.println("<tr>");
-                Stream.of(rowData)
-                        .forEach(coinPictureOutputter(pw));
+                rowData.forEach(coinPictureOutputter(pw));
                 pw.println("</tr>");
                 pw.println("<tr>");
-                Stream.of(rowData)
-                        .forEach(coinDescrOutputter(pw));
+                rowData.forEach(coinDescrOutputter(pw));
                 pw.println("</tr>");
             };
     }
