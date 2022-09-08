@@ -54,22 +54,17 @@ public class CoinPageOutputter
                                 .iterator();
                         if (!it.hasNext())
                             return;
+                        pw.println(
+                                "<tbody style='page-break-inside: avoid; page-break-before: auto'>");
                         pw.println("<tr>");
-                        for (var i = 0; i < 5; i++)
-                        {
+                        for (var i = 0; it.hasNext() && i < 5; i++)
                             output(pw, it.next());
-                            if (!it.hasNext())
-                                return;
-                        }
                         pw.println("</tr>");
                         pw.println("<tr>");
-                        for (var i = 0; i < 3; i++)
-                        {
+                        for (var i = 0; it.hasNext() && i < 3; i++)
                             output(pw, it.next());
-                            if (!it.hasNext())
-                                return;
-                        }
                         pw.println("</tr>");
+                        pw.println("</tbody>");
                     });
     }
 
@@ -93,12 +88,14 @@ public class CoinPageOutputter
                 var rowData = coins.subList(row * coinsPerRow,
                         Math.min(coins.size(), (row + 1) * coinsPerRow));
                 pw.println("<tr><td>&nbsp;</td></tr>");
+                pw.println("<tbody style='page-break-inside: avoid; page-break-before: auto'>");
                 pw.println("<tr>");
                 rowData.forEach(coinPictureOutputter(pw));
                 pw.println("</tr>");
                 pw.println("<tr>");
                 rowData.forEach(coinDescrOutputter(pw));
                 pw.println("</tr>");
+                pw.println("</tbody>");
             };
     }
 
