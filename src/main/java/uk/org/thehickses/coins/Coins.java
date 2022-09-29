@@ -1,6 +1,7 @@
 package uk.org.thehickses.coins;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Coins
 {
@@ -9,7 +10,11 @@ public class Coins
     {
         var defsByCountry = new DefinitiveCoinParser().parse()
                 .collect(Collectors.groupingBy(DefinitiveCoinData::country));
-        var commemsByCountry = new CommemorativeCoinParser().parse()
+        var commemsByCountry = Stream
+                .concat(new CommemorativeCoinParserCoinDB().parse(),
+                        new CommemorativeCoinParserECB().parse()
+                                .filter(c -> c.imageUri()
+                                        .contains("joint_comm")))
                 .sorted()
                 .collect(Collectors.groupingBy(CommemorativeCoinData::country));
         var outputter = new CoinPageOutputter();
