@@ -54,7 +54,7 @@ public class CommemorativeCoinParserECB
                     .get()
                     .select(".box")
                     .stream()
-                    .flatMap(parser(year));
+                    .flatMap(parser(year, URI.create(yearPageAddr)));
         }
         catch (IOException e)
         {
@@ -62,7 +62,7 @@ public class CommemorativeCoinParserECB
         }
     }
 
-    private Function<Element, Stream<CommemorativeCoinData>> parser(int year)
+    private Function<Element, Stream<CommemorativeCoinData>> parser(int year, URI page)
     {
         AtomicInteger seq = new AtomicInteger();
         return elem ->
@@ -78,7 +78,8 @@ public class CommemorativeCoinParserECB
                         .map(src ->
                             {
                                 return new CommemorativeCoinData(countryGetter.apply(src), year,
-                                        seq.getAndIncrement(), description, baseUri + src);
+                                        seq.getAndIncrement(), description, page.resolve(src)
+                                                .toString());
                             })
                         .filter(c -> Objects.nonNull(c.country()));
             };

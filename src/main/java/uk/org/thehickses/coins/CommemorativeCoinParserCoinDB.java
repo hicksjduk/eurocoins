@@ -1,5 +1,7 @@
 package uk.org.thehickses.coins;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +24,12 @@ public class CommemorativeCoinParserCoinDB
                 .forEach(System.out::println);
     }
 
+    static final Map<String, Integer> accessions = Stream
+            .of("Slovenia 2007", "Cyprus 2008", "Malta 2008", "Slovakia 2009", "Estonia 2011",
+                    "Latvia 2014", "Lithuania 2015", "Croatia 2023", "Andorra 2014")
+            .map(Pattern.compile("(\\S+) (\\d+)")::matcher)
+            .filter(Matcher::matches)
+            .collect(Collectors.toMap(m -> m.group(1), m -> Integer.parseInt(m.group(2))));
     static final String baseUri = "https://www.coin-database.com";
     static final String dataPage = "/series/eurozone-commemorative-2-euro-coins-2-euro.html?";
 
@@ -32,11 +40,14 @@ public class CommemorativeCoinParserCoinDB
         {
             var doc = Jsoup.connect(url)
                     .get();
-            return doc.select("img")
+            var national = doc.select("img")
                     .stream()
                     .map(parser())
                     .filter(Objects::nonNull)
-                    .filter(c -> !c.country().equals("Eurozone"));
+                    .filter(c -> !c.country()
+                            .equals("Eurozone"));
+            var erasmus = parseErasmus();
+            return Stream.concat(national, erasmus);
         }
         catch (Exception ex)
         {
@@ -62,4 +73,48 @@ public class CommemorativeCoinParserCoinDB
             };
     }
 
+    Stream<CommemorativeCoinData> parseErasmus()
+    {
+        try
+        {
+            var index = baseUri
+                    + "/coins/2-euro-coin-35th-anniversary-of-the-erasmus-programme-eurozone-2022.html";
+            return Jsoup.connect(index)
+                    .get()
+                    .select("a[href^=/coins/]")
+                    .stream()
+                    .map(e -> e.attr("href"))
+                    .map(baseUri::concat)
+                    .map(this::parseUri)
+                    .map(uri -> new CommemorativeCoinData(getCountry(uri), 2022, 0,
+                            "35th Anniversary of the Erasmus Programme", uri));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    String parseUri(String addr)
+    {
+        try
+        {
+            return baseUri + Jsoup.connect(addr)
+                    .get()
+                    .selectFirst(".detailCoinImg").attr("src");
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    String getCountry(String uri)
+    {
+        var m = Pattern.compile(".*/images/(.+)/.*")
+                .matcher(uri);
+        if (!m.matches())
+            throw new RuntimeException("Could not parse a country from " + uri);
+        return m.group(1);
+    }
 }
