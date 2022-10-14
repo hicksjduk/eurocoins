@@ -1,4 +1,4 @@
-package uk.org.thehickses.coins;
+package uk.org.thehickses.coins.euro;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

@@ -1,4 +1,4 @@
-package uk.org.thehickses.coins;
+package uk.org.thehickses.coins.euro;
 
 import java.io.IOException;
 import java.net.URI;
