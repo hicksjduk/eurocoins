@@ -25,7 +25,7 @@ public class CoinPageOutputter
     public void output(String country, List<DefinitiveCoinData> definitives,
             List<CommemorativeCoinData> commemoratives)
     {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("output/%s.html".formatted(country))))
+        try (PrintWriter pw = new PrintWriter(new FileWriter("output/euro/%s.html".formatted(country))))
         {
             pw.println("<h1>%s</h1>".formatted(country));
             pw.println("<table>");
