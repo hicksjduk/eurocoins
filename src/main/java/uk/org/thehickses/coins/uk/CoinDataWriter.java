@@ -5,18 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class CoinDataWriter50p
+public class CoinDataWriter
 {
-    public void write(PrintWriter pw)
-    {
-        write(new CoinListParser50p().parse()
-                .sorted(), pw);
-    }
-
-    void write(Stream<CoinData> coins, PrintWriter pw)
+    public void write(Stream<CoinData> coins, PrintWriter pw)
     {
         pw.println("<table>");
-        var it = coins.iterator();
+        var it = coins.sorted().iterator();
         while (it.hasNext())
         {
             List<String> descriptions = new ArrayList<>();

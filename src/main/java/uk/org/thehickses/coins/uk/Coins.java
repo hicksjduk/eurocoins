@@ -8,9 +8,16 @@ public class Coins
 {
     public static void main(String[] args)
     {
-        try (PrintWriter pw = new PrintWriter(new FileWriter("output/uk/50p.html")))
+        try
         {
-            new CoinDataWriter50p().write(pw);
+            try (PrintWriter pw = new PrintWriter(new FileWriter("output/uk/50p.html")))
+            {
+                new CoinDataWriter().write(new CoinListParser50p().parse(), pw);
+            }
+            try (PrintWriter pw = new PrintWriter(new FileWriter("output/uk/2pound.html")))
+            {
+                new CoinDataWriter().write(new CoinListParser2Pound().parse(), pw);
+            }
         }
         catch (IOException e)
         {
